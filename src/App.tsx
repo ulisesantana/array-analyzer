@@ -37,7 +37,7 @@ const Column = styled.div`
 `;
 
 function analyze(fn: string, data: string) {
-  try{
+  try {
     let f = (data: string) => data;
     eval(`f = ${fn}`);
     return f(JSON.parse(data));
@@ -55,7 +55,7 @@ function useHandler([state, setter]: [string, Dispatch<SetStateAction<string>>])
   ];
 }
 
-function itemCounter(array: any[]){
+function itemCounter(array: any[]) {
   return `Length: ${array.length} items.`;
 }
 
