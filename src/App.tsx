@@ -36,13 +36,22 @@ const Column = styled.div`
   overflow: auto;
 `;
 
-function analyze(fn: string, data: string) {
+function analyze(fn: string, rawData: string) {
   try {
-    let f = (data: string) => data;
-    eval(`f = ${fn}`);
-    return f(JSON.parse(data));
-  } catch {
-    return JSON.parse(data)
+    const data = JSON.parse(rawData);
+    if (Array.isArray(data)) {
+      try {
+        let f = (data: any[]) => data;
+        eval(`f = ${fn}`);
+        return f(data);
+      } catch {
+        return data;
+      }
+    } else {
+      return [];
+    }
+  } catch (e) {
+    return [];
   }
 }
 
