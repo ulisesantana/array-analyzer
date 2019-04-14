@@ -6,7 +6,9 @@ import data from './.templates/data.json';
 
 
 const Container = styled.main`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 1fr;
   flex-direction: row;
   height: ${window.innerHeight}px;
   padding: 0;
@@ -14,16 +16,20 @@ const Container = styled.main`
   width: ${window.innerWidth}px;
   
   & > :first-child {
-    max-width: 400px;
-    min-width: 300px;
+    display: grid;
+    grid-template-rows: 1fr 2fr;
+  }
+  & > :last-child {
+    display: grid;
+    grid-template-rows: 1fr;
   }
   
   @media (max-width: 768px) {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
       
     & > :first-child {
-      height: calc(${window.innerHeight}px / 2);
-      max-width: 100%;
+      width: 100%;
     }
   }
 `;
@@ -31,7 +37,7 @@ const Container = styled.main`
 const Column = styled.div`
   display: grid;
   grid-template-rows: 1fr;
-  grid-auto-columns: 1fr;
+  grid-template-columns: 1fr;
   width: 100%;
   overflow: auto;
 `;
@@ -77,10 +83,9 @@ const App: FunctionComponent<{}> = () => {
     <Container>
       <Column>
         <TextArea spellCheck={false} value={fn} onChange={fnHandler}/>
+        <TextArea spellCheck={false} value={raw} onChange={rawHandler}/>
       </Column>
       <Column>
-        <TextArea spellCheck={false} value={raw} onChange={rawHandler}/>
-        <Column>
           <div>
             {result && itemCounter(result)}
           </div>
@@ -89,7 +94,6 @@ const App: FunctionComponent<{}> = () => {
             {JSON.stringify(result, null, 2)}
             </code>
           </pre>
-        </Column>
       </Column>
     </Container>
   );
