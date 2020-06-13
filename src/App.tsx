@@ -15,13 +15,16 @@ const Container = styled.main`
   width: ${window.innerWidth}px;
 
   .editors {
+    background-color: #202124;
     display: grid;
     grid-template-rows: 1fr 2fr;
+    padding: 16px 0;
   }
 
   & > :last-child {
     display: grid;
     grid-template-rows: 1fr;
+    padding: 16px 0;
   }
 
   @media (max-width: 768px) {

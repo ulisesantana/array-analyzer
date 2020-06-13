@@ -16,7 +16,7 @@ export function Editor({ value, onChange }: EditorProps) {
   return (
     <>
       <ControlledEditor
-        height="100%"
+        height="calc(100% - 16px)"
         language="javascript"
         value={value}
         onChange={handleOnChange}
