@@ -43,6 +43,12 @@ const Column = styled.div`
   grid-template-columns: 1fr;
   width: 100%;
   overflow: auto;
+
+  &.result {
+    grid-template-rows: 16px 1fr;
+    grid-template-columns: 1fr;
+    padding: 8px
+  }
 `;
 
 function analyze(fn: string, rawData: string) {
@@ -58,8 +64,11 @@ function analyze(fn: string, rawData: string) {
   }
 }
 
-function itemCounter(array: any[]) {
-  return `Length: ${array.length} items.`;
+function itemCounter(array: object): string {
+  if (Array.isArray(array)) {
+    return `Length: ${array.length} items.`;
+  }
+  return ''
 }
 
 const App: FunctionComponent<{}> = () => {
@@ -73,7 +82,7 @@ const App: FunctionComponent<{}> = () => {
         <Editor value={fn} onChange={fnHandler} />
         <Editor value={raw} onChange={rawHandler} />
       </Column>
-      <Column>
+      <Column className="result">
         <div>{result && itemCounter(result)}</div>
         <pre>
           <code className="language-js">{JSON.stringify(result, null, 2)}</code>
