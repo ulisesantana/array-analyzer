@@ -12,7 +12,7 @@ const Container = styled.main`
   height: ${window.innerHeight}px;
   padding: 0;
   margin: 0;
-  width: ${window.innerWidth}px;
+  width: 100%;
 
   .editors {
     background-color: #202124;
@@ -47,7 +47,9 @@ const Column = styled.div`
   &.result {
     grid-template-rows: 16px 1fr;
     grid-template-columns: 1fr;
-    padding: 8px
+    height: calc(100% - 32px);
+    width: calc(100% - 32px);
+    padding: 16px;
   }
 `;
 
