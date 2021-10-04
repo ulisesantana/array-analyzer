@@ -20,7 +20,7 @@ export function Editor({ value, onChange }: EditorProps) {
         language="javascript"
         value={value}
         onChange={handleOnChange}
-        theme="dark"
+        theme="vs-dark"
       />
     </>
   );
