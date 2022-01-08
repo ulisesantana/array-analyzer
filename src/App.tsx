@@ -1,97 +1,66 @@
-import React, { FunctionComponent, useState } from "react";
-import styled from "styled-components";
-import { Editor } from "./components";
-import fnTemplate from "./.templates/function";
+import React, {FunctionComponent, useRef, useState} from "react";
+import {Editor} from "./components";
+import {Template, TemplateDictionary} from "./.templates/function";
 import data from "./.templates/data.json";
-
-const Container = styled.main`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  flex-direction: row;
-  height: ${window.innerHeight}px;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-
-  .editors {
-    background-color: #202124;
-    display: grid;
-    grid-template-rows: 1fr 2fr;
-    padding: 16px 0;
-  }
-
-  & > :last-child {
-    display: grid;
-    grid-template-rows: 1fr;
-    padding: 16px 0;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-
-    & > :first-child {
-      width: 100%;
-    }
-  }
-`;
-
-const Column = styled.div`
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr;
-  width: 100%;
-  overflow: auto;
-
-  &.result {
-    grid-template-rows: 16px 1fr;
-    grid-template-columns: 1fr;
-    height: calc(100% - 32px);
-    width: calc(100% - 32px);
-    padding: 16px;
-  }
-`;
+import {Column, Container} from "./App.style";
 
 function analyze(fn: string, rawData: string) {
-  try {
-    const data = Array.isArray(JSON.parse(rawData))
-      ? JSON.parse(rawData)
-      : [...rawData];
-    let f = (data: any[]) => data;
-    eval(`f = ${fn}`);
-    return f(data);
-  } catch (e) {
-    return [];
-  }
+    try {
+        const data = Array.isArray(JSON.parse(rawData))
+            ? JSON.parse(rawData)
+            : [...rawData];
+        let f = (data: any[]) => data;
+        eval(`f = ${fn}`);
+        return f(data);
+    } catch (e) {
+        return [];
+    }
 }
 
 function itemCounter(array: object): string {
-  if (Array.isArray(array)) {
-    return `Length: ${array.length} items.`;
-  }
-  return ''
+    if (Array.isArray(array)) {
+        return `Length: ${array.length} items.`;
+    }
+    return ''
 }
 
 const App: FunctionComponent<{}> = () => {
-  const [raw, rawHandler] = useState(JSON.stringify(data, null, 2));
-  const [fn, fnHandler] = useState(fnTemplate);
-  const result = analyze(fn, raw);
+    const [raw, setRaw] = useState(JSON.stringify(data, null, 2));
+    const [fn, setFn] = useState(TemplateDictionary.default);
+    const formRef = useRef<HTMLFormElement>(null)
+    function onSelectChange () {
+        const form = formRef.current
+        const formData = new FormData(form as HTMLFormElement)
+        setFn(TemplateDictionary[formData.get('template') as Template])
+    }
+    const result = analyze(fn, raw);
 
-  return (
-    <Container>
-      <Column className="editors">
-        <Editor value={fn} onChange={fnHandler} />
-        <Editor value={raw} onChange={rawHandler} />
-      </Column>
-      <Column className="result">
-        <div>{result && itemCounter(result)}</div>
-        <pre>
+
+    return (
+        <Container>
+            <Column className="editors">
+                <form ref={formRef}>
+                    <label htmlFor="template">Select template: </label>
+                    <select title="Template" onChange={onSelectChange} name="template">
+                        <option selected
+                                value={Template.MAP}>{Template.MAP}</option>
+                        <option
+                            value={Template.FILTER}>{Template.FILTER}</option>
+                        <option
+                            value={Template.REDUCE}>{Template.REDUCE}</option>
+                    </select>
+                </form>
+                <Editor value={fn} onChange={setFn}/>
+                <Editor value={raw} onChange={setRaw}/>
+            </Column>
+            <Column className="result">
+                <div>{result && itemCounter(result)}</div>
+                <pre>
           <code className="language-js">{JSON.stringify(result, null, 2)}</code>
         </pre>
-      </Column>
-    </Container>
-  );
+            </Column>
+        </Container>
+    );
 };
 
 export default App;
